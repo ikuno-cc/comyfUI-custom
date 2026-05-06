@@ -97,6 +97,13 @@ def save_video_to_input(file_bytes: bytes, ext: str = ".mp4") -> str:
     return filename
 
 
+def save_audio_to_input(file_bytes: bytes, ext: str = ".wav") -> str:
+    filename = f"runpod_audio_{uuid.uuid4().hex}{ext if ext else '.wav'}"
+    COMFYUI_INPUT_DIR.mkdir(parents=True, exist_ok=True)
+    (COMFYUI_INPUT_DIR / filename).write_bytes(file_bytes)
+    return filename
+
+
 def prepare_media(job_input: dict, workflow: dict) -> dict:
     media_info = {}
 
@@ -127,6 +134,24 @@ def prepare_media(job_input: dict, workflow: dict) -> dict:
     if video_filename:
         replace_placeholder_in_workflow(workflow, "__VIDEO__", video_filename)
         media_info["video_filename"] = video_filename
+
+    audio_filename = None
+    if isinstance(job_input.get("audio_url"), str):
+        audio_bytes, guessed_ext = download_url_bytes(job_input["audio_url"])
+        audio_ext = guessed_ext.lower() if guessed_ext else ".wav"
+        if audio_ext not in (".wav", ".mp3"):
+            audio_ext = ".wav"
+        audio_filename = save_audio_to_input(audio_bytes, audio_ext)
+    elif isinstance(job_input.get("audio_base64"), str):
+        audio_bytes, guessed_ext = decode_base64_file(job_input["audio_base64"])
+        audio_ext = guessed_ext.lower() if guessed_ext else ".wav"
+        if audio_ext not in (".wav", ".mp3"):
+            audio_ext = ".wav"
+        audio_filename = save_audio_to_input(audio_bytes, audio_ext)
+
+    if audio_filename:
+        replace_placeholder_in_workflow(workflow, "__AUDIO__", audio_filename)
+        media_info["audio_filename"] = audio_filename
 
     return media_info
 
