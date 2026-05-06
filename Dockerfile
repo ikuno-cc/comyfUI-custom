@@ -28,6 +28,7 @@ RUN python -m pip install --upgrade pip setuptools wheel && \
     if [ -f custom_nodes/ComfyUI-LTXVideo/requirements.txt ]; then pip install -r custom_nodes/ComfyUI-LTXVideo/requirements.txt; fi && \
     if [ -f custom_nodes/ComfyUI-VideoHelperSuite/requirements.txt ]; then pip install -r custom_nodes/ComfyUI-VideoHelperSuite/requirements.txt; fi && \
     if [ -f custom_nodes/ComfyUI-KJNodes/requirements.txt ]; then pip install -r custom_nodes/ComfyUI-KJNodes/requirements.txt; fi && \
+    pip install sageattention && \
     pip install runpod requests
 
 EXPOSE 8188
