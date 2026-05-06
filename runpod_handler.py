@@ -160,8 +160,18 @@ def queue_prompt(workflow: dict) -> str:
     client_id = str(uuid.uuid4())
     payload = {"prompt": workflow, "client_id": client_id}
     response = requests.post(f"{COMFYUI_BASE}/prompt", json=payload, timeout=30)
-    response.raise_for_status()
-    return response.json()["prompt_id"]
+    if not response.ok:
+        details = response.text
+        try:
+            details = response.json()
+        except Exception:
+            pass
+        raise RuntimeError(f"ComfyUI /prompt rejected request ({response.status_code}): {details}")
+
+    data = response.json()
+    if "prompt_id" not in data:
+        raise RuntimeError(f"ComfyUI /prompt response missing prompt_id: {data}")
+    return data["prompt_id"]
 
 
 def wait_for_completion(prompt_id: str, timeout_seconds: int = 600) -> dict:
