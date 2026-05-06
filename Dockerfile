@@ -21,11 +21,13 @@ COPY . ${COMFYUI_DIR}
 WORKDIR ${COMFYUI_DIR}
 
 RUN git clone https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite.git custom_nodes/ComfyUI-VideoHelperSuite
+RUN git clone https://github.com/kijai/ComfyUI-KJNodes.git custom_nodes/ComfyUI-KJNodes
 
 RUN python -m pip install --upgrade pip setuptools wheel && \
     pip install -r requirements.txt && \
-    pip install -r custom_nodes/ComfyUI-LTXVideo/requirements.txt && \
-    pip install -r custom_nodes/ComfyUI-VideoHelperSuite/requirements.txt && \
+    if [ -f custom_nodes/ComfyUI-LTXVideo/requirements.txt ]; then pip install -r custom_nodes/ComfyUI-LTXVideo/requirements.txt; fi && \
+    if [ -f custom_nodes/ComfyUI-VideoHelperSuite/requirements.txt ]; then pip install -r custom_nodes/ComfyUI-VideoHelperSuite/requirements.txt; fi && \
+    if [ -f custom_nodes/ComfyUI-KJNodes/requirements.txt ]; then pip install -r custom_nodes/ComfyUI-KJNodes/requirements.txt; fi && \
     pip install runpod requests
 
 EXPOSE 8188
