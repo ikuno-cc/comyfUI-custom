@@ -22,12 +22,14 @@ WORKDIR ${COMFYUI_DIR}
 
 RUN git clone https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite.git custom_nodes/ComfyUI-VideoHelperSuite
 RUN git clone https://github.com/kijai/ComfyUI-KJNodes.git custom_nodes/ComfyUI-KJNodes
+RUN git clone https://github.com/yolain/ComfyUI-Easy-Use.git custom_nodes/ComfyUI-Easy-Use
 
 RUN python -m pip install --upgrade pip setuptools wheel && \
     pip install -r requirements.txt && \
     if [ -f custom_nodes/ComfyUI-LTXVideo/requirements.txt ]; then pip install -r custom_nodes/ComfyUI-LTXVideo/requirements.txt; fi && \
     if [ -f custom_nodes/ComfyUI-VideoHelperSuite/requirements.txt ]; then pip install -r custom_nodes/ComfyUI-VideoHelperSuite/requirements.txt; fi && \
     if [ -f custom_nodes/ComfyUI-KJNodes/requirements.txt ]; then pip install -r custom_nodes/ComfyUI-KJNodes/requirements.txt; fi && \
+    if [ -f custom_nodes/ComfyUI-Easy-Use/requirements.txt ]; then pip install -r custom_nodes/ComfyUI-Easy-Use/requirements.txt; fi && \
     pip install sageattention && \
     pip install runpod requests
 
